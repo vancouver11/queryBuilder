@@ -5,7 +5,7 @@ define('DS', DIRECTORY_SEPARATOR);
 
 $basePath = realpath(__DIR__ . DS . '..' . DS . '..') . DS;
 $appPath = $basePath . 'app' . DS;
-print_r(__DIR__.DS.'mysqlconf.php');
+//print_r(__DIR__.DS.'mysqlconf.php');
 $mainconfig = [
     'basePath' => $basePath,
     'appPath' => $appPath,
