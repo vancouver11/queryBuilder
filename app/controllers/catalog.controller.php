@@ -29,32 +29,34 @@ class controllerCatalog extends controller
         $example = new queryBuilder;
 
      //------------------------------------SELECT-----------------------------------------
-      echo $example->select('id,name,surname')->from('students')->where('id=2')->getText();
+     echo $example->select('id,name,surname')->from('students')->where('id=2')->getText();
+     // echo $example->update("fewg")->from("a-b")->getText();
       // $example->select('id,name,surname')->from('students')->where('id=2')->execute();
 
       // $example->select('id,name,surname')->from('students')->where('id>3')->order('id DESC') ->limit(2)->getText()->execute(); 
      //
 
     //------------------------------------INSERT-----------------------------------------
-     //echo $example->insert(['name' => "IVAN", 'surname' => "IVANOV", 'group_st' => 4])->into('students') ->getText();
+     //echo $example->into('students')->insert(['name' => "IVAN", 'surname' => "IVANOV", 'group_st' => 4]) ->getText();
      // $example->insert(['name' => "IVAN", 'surname' => "SIDOROV", 'group_st' => 4])->into('students')->execute();
     //
         
     //------------------------------------UPDATE----------------------------------------
-     // echo $example->update('students')->set(['name'=>'Oleg', 'surname'=>'OPPP', 'group_st' => 6])->where('id=2')->getText();
+     //echo $example->update('students')->set(['name'=>'Oleg', 'surname'=>'OPPP', 'group_st' => 6])->where('id=2')->getText();
      // $example->update('students')->set (['name'=>'Oleg', 'surname'=>'OPPP', 'group_st' => 6])->where('id=2')->execute();
     //
 
 
     //------------------------------------DELETE----------------------------------------   
-   //echo $example->delete()->from('students')->where('id=455')->getText();
+   //echo $example->from('students')->where('id=455')->delete()->getText();
+   //echo $example->select()->into('studetns')->getText();
    // $example->delete()->from('students')->where('id=455')->execute();
      
 
    //------------------------------------JOIN----------------------------------------   
-   // echo $example->select('id,name,surname')->from('students as st')->join('classes as cl')->on('cl.id = st.id')->getText();
-   //echo  $example->select('id,name,surname')->from('students as st')->join('classes as cl')->on('cl.id = st.id')->
-   //join('teachers as t')->on('t.id = cl.id')->getText();
+  // echo $example->update('gwe')->set(['name'=>'Oleg', 'surname'=>'OPPP', 'group_st' => 6])->join('classes as cl')->on('cl.id = st.id')->getText();
+ /*  echo  $example->select('id,name,surname')->from('students as st')->join('classes as cl')->on('cl.id = st.id')->
+  join('teachers as t')->on('t.id = cl.id')->getText(); */
 
        //------------------------------------Подзапрос----------------------------------------   
        /*  $subquery =  '('.$example->select('id')->from('students')->where('name = "Ivan"')->getText() .')';

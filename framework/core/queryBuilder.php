@@ -91,90 +91,104 @@ class queryBuilder{
 
 
         public function getText(){
-
-            if(isset($this->parts['keysInsert']) && isset($this->parts['valuesInsert'])){
-                $this->sql = 'INSERT INTO '.
+            //INSERT
+            if(isset($this->parts['keysInsert']) && isset($this->parts['valuesInsert']) && isset($this->parts['intoTable'])){
+                $this->sql = 'INSERT INTO '. $this->parts['intoTable'].
                  ' ('. $this->parts['keysInsert'] . ') VALUES ('.$this->parts['valuesInsert'].')'; 
-                unset($this->parts['keysInsert']);
+               unset($this->parts['keysInsert']);
                 unset($this->parts['valuesInsert']);
-               
+                unset($this->parts['intoTable']); 
              }
 
-             if (isset($this->parts['intoTable'])){
-                $start = strpos($this->sql, 'INTO ');
-                $start +=5;
-                $this->sql = substr_replace($this->sql, $this->parts['intoTable'], $start,0);
-                unset($this->parts['intoTable']);
-             }
-             
-             if(isset($this->parts['updateTable'])){
+        
+ //---------------------------------------------------------------------------------------------  
+ 
+            //UPDATE
+             if(isset($this->parts['updateTable']) && isset($this->parts['set'])){
                 $this->sql = 'UPDATE '. $this->parts['updateTable'];
-                unset($this->parts['updateTable']);
-             }
-    
-             if( isset($this->parts['set'])){
-                 $setExpession ='';
-                 foreach ($this->parts['set'] as $key => $value) {
-                    if($value == end($this->parts['set'])) {
-                        $setExpession .= $key .'='. '\''. $value .'\' ';
-                  }
-                  else {
-                    $setExpession .= $key .'='. '\''. $value .'\', ';
-                  }
-                    
+
+                $setExpession ='';
+                foreach ($this->parts['set'] as $key => $value) {
+                   if($value == end($this->parts['set'])) {
+                       $setExpession .= $key .'='. '\''. $value .'\' ';
                  }
-                     $this->sql .= ' SET ' . $setExpession;
-                     unset($this->parts['set']);
+                 else {
+                   $setExpession .= $key .'='. '\''. $value .'\', ';
+                 }
+                 
+                }
+                $this->sql .= ' SET ' . $setExpession;  
+
+                if(isset($this->parts['where'])){
+                    $this->sql .=' WHERE '.$this->parts['where'];
+                   }
+               unset($this->parts['updateTable']);
+               unset($this->parts['set']); 
+               unset($this->parts['where']);
              }
 
-            
-            if(isset($this->parts['select'])){
-               $this->sql = 'SELECT '. $this->parts['select'] ;
-               unset($this->parts['select']);    
-            }
-            if(isset($this->parts['delete'])){
-                $this->sql = 'DELETE ';
-                unset($this->parts['delete']); 
-             }
-            if( isset($this->parts['from'])){
-                $this->sql .= ' FROM '. $this->parts['from'];
-                unset($this->parts['from']);
-            }
-            if(isset($this->parts['joinTable'])){
+//----------------------------------------- 
 
-                $this->sql .= " JOIN ". reset($this->parts['joinTable']);
-              
-                array_shift($this->parts['joinTable']);
-                if(count($this->parts['joinTable']) == 0){
-                    unset($this->parts['joinTable']); 
-                }  
-            }
-
-            if(isset($this->parts['on'])){
-                $this->sql .= " ON ". reset($this->parts['on']);
-            
-                array_shift($this->parts['on']);
-                if(count($this->parts['on']) == 0){
-                    unset($this->parts['on']); 
-                }  
-            }
-            if(isset($this->parts['where'])){
-                $this->sql .= ' WHERE '.$this->parts['where'] ;
+        //SELECT
+            if(isset($this->parts['select']) && isset($this->parts['from'])){
+               $this->sql = 'SELECT '. $this->parts['select'] . ' FROM '. $this->parts['from'] ;
+               if(isset($this->parts['where'])){
+                $this->sql .=' WHERE '.$this->parts['where'];
+               }
+                unset($this->parts['select']);  
+                unset($this->parts['from']) ; 
                 unset($this->parts['where']);
             }
+//-------------------------------------------------------
+        //DELETE
+
+            if(isset($this->parts['delete']) &&  isset($this->parts['from'])){
+                $this->sql = 'DELETE '. ' FROM '. $this->parts['from'];
+                if(isset($this->parts['where'])){
+                    $this->sql .=' WHERE '.$this->parts['where'];
+                   }
+               unset($this->parts['delete']); 
+               unset($this->parts['from']); 
+               unset($this->parts['where']);
+             }
+//-----------------------------------------------------------
+            //JOIN
+            if(isset($this->parts['joinTable']) && isset($this->parts['on'])){
+
+                $this->sql .= " JOIN ". reset($this->parts['joinTable']) ." ON ". reset($this->parts['on']);
+             
+                array_shift($this->parts['joinTable']);
+                array_shift($this->parts['on']);
+                if(count($this->parts['joinTable']) == 0 && $this->parts['on'] ==0){
+                    unset($this->parts['joinTable']);
+                    unset($this->parts['on']);  
+                }  
+
+ 
+            }
+//---------------------------------------------------------
+            //ORDER
             if(isset($this->parts['order'])){
                 $this->sql .= ' ORDER BY '. $this->parts['order'];
-                unset($this->parts['order']);
+                //unset($this->parts['order']);
             }
+//---------------------------------------------------------
+            //LIMIT
             if(isset($this->parts['limit'])){
                 $this->sql .= ' LIMIT '. $this->parts['limit'];
-                unset($this->parts['limit']);
+               // unset($this->parts['limit']);
             }
+//---------------------------------------------------------
 
-
-           if(count($this->parts) !== 0){
-            $this->getText();
+           if(isset($this->parts['joinTable']) || isset($this->parts['on']) ){
+                if(count($this->parts['joinTable']) !== 0 && count($this->parts['on']) !==0){
+                    $this->getText();
+                }  
+                else{
+                    unset($this->parts);
+                } 
            }
+ 
 
 
            return $this->sql;
